@@ -14,10 +14,12 @@
         ,stats_index/0
         ,stats_index/1
         ,stats_index/2
+        ,cluster_health/0
         ,nodes_info/0
         ,nodes_info/1
         ,nodes_info/2
         ,nodes_stats/0
+        ,nodes_stats/1
         ,put_mapping/3
         ,put_mapping/4
         ,get_mapping/0
@@ -132,6 +134,18 @@ stats_index(Params, Index) ->
 
 %%--------------------------------------------------------------------
 %% @doc
+%% Returns the health of the cluster
+%% @end
+%%--------------------------------------------------------------------                     
+
+cluster_health() ->
+    cluster_health(#erls_params{}). 
+              
+cluster_health(#erls_params{} = Params) ->
+    erls_resource:get(Params, filename:join("_cluster/health", commas([])), [], [],
+                      Params#erls_params.http_client_options).  
+%%--------------------------------------------------------------------
+%% @doc
 %% Takes an optional list of node names and the record describing the servers
 %% details to read the infos for these nodes.
 %% If no index in supplied then stats for all indices are returned.
@@ -151,8 +165,13 @@ nodes_info(#erls_params{} = Params) ->
 nodes_info(#erls_params{} = Params, Nodes) when erlang:is_list(Nodes) ->
     erls_resource:get(Params, filename:join("_nodes", commas(Nodes)), [], [],
                       Params#erls_params.http_client_options).
+
+-spec nodes_stats() -> {ok, erlastic_success_result()} | {error, any()}.
 nodes_stats() ->
-    Params = #erls_params{},
+    nodes_stats(#erls_params{}).
+
+-spec nodes_stats(#erls_params{}) -> {ok, erlastic_success_result()} | {error, any()}.
+nodes_stats(#erls_params{} = Params) ->
     erls_resource:get(Params, filename:join("_nodes/stats", commas([])), [], [],
                       Params#erls_params.http_client_options).
 
