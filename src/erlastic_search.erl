@@ -152,7 +152,8 @@ nodes_info(#erls_params{} = Params, Nodes) when erlang:is_list(Nodes) ->
     erls_resource:get(Params, filename:join("_nodes", commas(Nodes)), [], [],
                       Params#erls_params.http_client_options).
 nodes_stats() ->
-    erls_resource:get(#erls_params{}, filename:join("_nodes/stats", commas([])), [], [],
+    Params = #erls_params{},
+    erls_resource:get(Params, filename:join("_nodes/stats", commas([])), [], [],
                       Params#erls_params.http_client_options).
 
 %%--------------------------------------------------------------------
