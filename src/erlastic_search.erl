@@ -17,6 +17,7 @@
         ,nodes_info/0
         ,nodes_info/1
         ,nodes_info/2
+        ,nodes_stats/0
         ,put_mapping/3
         ,put_mapping/4
         ,get_mapping/0
@@ -149,6 +150,9 @@ nodes_info(#erls_params{} = Params) ->
 -spec nodes_info(#erls_params{}, [binary()]) -> {ok, erlastic_success_result()} | {error, any()}.
 nodes_info(#erls_params{} = Params, Nodes) when erlang:is_list(Nodes) ->
     erls_resource:get(Params, filename:join("_nodes", commas(Nodes)), [], [],
+                      Params#erls_params.http_client_options).
+nodes_stats() ->
+    erls_resource:get(#erls_params{}, filename:join("_nodes/stats", commas([])), [], [],
                       Params#erls_params.http_client_options).
 
 %%--------------------------------------------------------------------
