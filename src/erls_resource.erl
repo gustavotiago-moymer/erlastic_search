@@ -85,7 +85,7 @@ do_request(#erls_params{host=Host, port=Port, timeout=Timeout, ctimeout=CTimeout
     Request = hackney:request(Method, <<Host/binary, ":", (list_to_binary(integer_to_list(Port)))/binary,
                                    "/", Path/binary>>, Headers, Body,
                          NewOptions),
-    END_TIME = erlang:system_time(milli_seconds),
+    END_TIME = erlang:system_time(milli_seconds) - START_TIME,
     case Method of get -> io:format("TIME REQUEST ~p~n", [END_TIME]); _ -> none end,    
      
     case Request of
