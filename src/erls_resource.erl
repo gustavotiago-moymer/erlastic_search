@@ -124,8 +124,15 @@ encode_query(Props) ->
 
 default_header(K, V, H) ->
     case proplists:is_defined(K, H) of
-        true -> H;
-        false -> [{K, V}|H]
+        true -> add_authentication(H);
+        false -> add_authentication([{K, V}|H])
+    end.
+
+add_authentication(Header) ->
+    case application:get_env(erlastic_search, passwd) of
+	undefined -> Header;
+	{ok, Passwd} -> 
+	    [{<<"Authorization">>,iolist_to_binary([<<"Basic ">>,base64:encode_to_string(Passwd)]) } | Header]
     end.
 
 default_content_length(B, H) ->
