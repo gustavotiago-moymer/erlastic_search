@@ -81,12 +81,12 @@ do_request(#erls_params{host=Host, port=Port, timeout=Timeout, ctimeout=CTimeout
 
     NewOptions =  [{pool, es_pool} | OptionsAux],           
         
-    START_TIME = erlang:system_time(milli_seconds),
+    %%START_TIME = erlang:system_time(milli_seconds),
     Request = hackney:request(Method, <<Host/binary, ":", (list_to_binary(integer_to_list(Port)))/binary,
                                    "/", Path/binary>>, Headers, Body,
                          NewOptions),
-    END_TIME = erlang:system_time(milli_seconds) - START_TIME,
-    io:format("TIME REQUEST ~p~n", [END_TIME]),   
+    %%END_TIME = erlang:system_time(milli_seconds) - START_TIME,
+    %%io:format("TIME REQUEST ~p~n", [END_TIME]),   
      
     case Request of
  
