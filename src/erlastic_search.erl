@@ -100,6 +100,9 @@
         ,bulk_operation/2
         ,put_setting/2
         ,put_setting/3
+        ,upsert_script_opts/6
+        ,update_by_query/5
+        ,new_delete_doc_by_query/4
 ]).
 
 
@@ -435,6 +438,26 @@ upsert_doc_opts(Params, Index, Type, Id, Doc, Opts) when is_list(Opts), (is_list
                        Body,
                        Params#erls_params.http_client_options).
 
+-spec upsert_script_opts(#erls_params{}, binary(), binary(), binary(), erlastic_json(), list()) -> {ok, erlastic_success_result()} | {error, any()}.
+upsert_script_opts(Params, Index, Type, Id, Doc, Opts) when is_list(Opts), (is_list(Doc) orelse is_tuple(Doc) orelse is_map(Doc)) ->
+    %% Doc is an script update as https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-update.html
+    DocBin = erls_json:encode(Doc),
+        %% we cannot use erls_json to generate this, see the doc string for `erls_json:encode/1'                                                                                                                                                                                  
+    Body = DocBin,
+        erls_resource:post(Params, filename:join([Index, Type, Id, "_update"]), [], Opts,
+                       Body,
+                       Params#erls_params.http_client_options).
+
+
+update_by_query(Params, Index, Type,  Doc, Opts) when is_list(Opts), (is_list(Doc) orelse is_tuple(Doc) orelse is_map(Doc)) ->
+    %% Doc is an script update as https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-update.html
+    DocBin = erls_json:encode(Doc),
+        %% we cannot use erls_json to generate this, see the doc string for `erls_json:encode/1'                                                                                                                                                                                  
+    Body = DocBin,
+        erls_resource:post(Params, filename:join([Index, Type, "_update_by_query"]), [], Opts,
+                       Body,
+                       Params#erls_params.http_client_options).
+
 %% Bulk index docs with default params
 -spec bulk_index_docs(list()) -> {ok, list} | {error, any()}.
 bulk_index_docs(IndexTypeIdJsonTuples) ->
@@ -589,6 +612,10 @@ delete_doc_by_query_doc(Params, Index, any, Doc) ->
 
 delete_doc_by_query_doc(Params, Index, Type, Doc) ->
     erls_resource:delete(Params, filename:join([Index, Type, <<"_query">>]), [], [], erls_json:encode(Doc), Params#erls_params.http_client_options).
+
+new_delete_doc_by_query(Params, Index, Type, Query) ->
+    Opts = [],
+    erls_resource:post(Params, filename:join([commas(Index), Type, <<"_delete_by_query">>]), [], Opts, erls_json:encode(Query), Params#erls_params.http_client_options).
 
 %%--------------------------------------------------------------------
 %% @doc
