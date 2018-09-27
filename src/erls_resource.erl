@@ -18,6 +18,9 @@
         ,post/6
         ,put/6]).
 
+-export([start_pool/0, 
+	 stop_pool/0]).
+
 -include("erlastic_search.hrl").
 
 start_pool() ->
