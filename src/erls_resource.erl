@@ -86,7 +86,7 @@ do_request(#erls_params{host=Host, port=Port, timeout=Timeout, ctimeout=CTimeout
                                    "/", Path/binary>>, Headers, Body,
                          NewOptions),
     END_TIME = erlang:system_time(milli_seconds) - START_TIME,
-    case Method of get -> io:format("TIME REQUEST ~p~n", [END_TIME]); _ -> none end,    
+    case END_TIME > 1000 of true -> io:format("TIME REQUEST ~p~n", [END_TIME]); _ -> none end,    
      
     case Request of
  
